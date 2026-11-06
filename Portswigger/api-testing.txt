@@ -1,0 +1,47 @@
+API Documentation
+・Documentationのある場所を探す
+・Documentationから怪しいエンドポイントを特定する
+
+・JS Link Finerを利用して、JavaScript fileから怪しいendpointについて書き込みがないかチェック
+
+・GETをPOSTに変えてみたり、XMLからJSONに変えてみたりするのもあり(パラメータ is_admin が足りません、このデータ形式（application/xml）はサポートしていません、JSONで送ってねみたいな感じでエラーメッセージが変わって、ヒントを出してくれえる可能性がある
+
+・Burp Intruder HTTP verbsを使ってみる。DELETEなどは基本的に使用しないほうが良い
+・content typeを特定し、サポートしてないcontentでも攻撃を試す
+・Burp Intruderでhidden endpointをリスト攻撃で特定してみる
+・Param miner 65536通りのパラメータをチェックする
+・Content discovery tool リンクすらされていない隠しコンテンツを 片っ端から見つけ出す 
+
+・Mass Assignment (一括割り当て)
+ウェブ開発フレームワーク(Ruby on Railsとか)とかでオートバインディングされたデータの中にis_admin=trueとかを混ぜる手法
+・PATCH requestで隠れたGET requestの中身を見てhidden parameterを特定する
+
+設計図を隠す
+HTTP Requestのホワイトリストを作成する
+コンテンツタイプを厳しくチェックする
+エラーメッセージを最小限にする
+古いバージョンを放置しない
+
+Server-Side Parameter Pollution
+サーバーに対するリクエストの中に怪しいパラメータを忍ばせるやつ
+Truncating query string #を使ってぶった切る
+あえて&foo=xyzのような無意味なパラメータを入れてエラーを吐かせて仕様を調べる
+emailなど意味のあるパラメータを入れることで見えるものもある
+
+Overriding exisitng parameter
+例えば GET /userSearch?name=peter%26name=carlos&back=/home
+これを送った時、サーバーによって処理の仕方が違う
+PHP 最後のやつcarlosを処理する
+ASP.NET 両方をくっつけたやｔpeter,carlosになる
+Node.js 最初のパラメータpeterを処理する
+やりかたによってはname=administratorを指定することが可能になるかもしれませんね
+,を入れて内部api通信で使われるjsonに”is_administrator”=”true”を入れたりする
+
+Server-side vulnerability
+Security by obscurityはほぼ意味ない。authenticationをちゃんとしましょう
+ユーザーから送られたパラメータで判断せず、かならずユーザー情報を保存してるサーバーにチェックしましょう
+
+CSRFの発動条件
+・狙うべき具体的なアクションがあること  - パスワード変更、権限奪取など
+・Cookieベースのセッション管理であること  - Cookieのみに頼ってる
+・予測不可能なリクエストパラメータがないこと - 古いパスワードの要求が突然来たりとかはない
