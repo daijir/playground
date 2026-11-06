@@ -28,6 +28,21 @@ Truncating query string #を使ってぶった切る
 あえて&foo=xyzのような無意味なパラメータを入れてエラーを吐かせて仕様を調べる
 emailなど意味のあるパラメータを入れることで見えるものもある
 
+labの例
+username パラメータの値を administrator から administratorx などの無効なユーザー名に変更し、リクエストを送信します。これにより Invalid username（無効なユーザー名）というエラーメッセージが返されることを確認します。
+
+URLエンコードされた & 文字を使用して、2つ目のパラメータと値のペアをサーバーサイドのリクエストに追加してみます。例えば、URLエンコードされた &x=y を追加します：
+username=administrator%26x=y
+リクエストを送信します。これにより Parameter is not supported（サポートされていないパラメータです）というエラーメッセージが返されることを確認します。これは、内部APIが &x=y をusernameの一部ではなく、別のパラメータとして解釈したことを示しています。
+
+URLエンコードされた # 文字を使用して、サーバーサイドのクエリ文字列を切り捨て（truncate）してみます：
+username=administrator%23
+リクエストを送信します。これにより Field not specified（フィールドが指定されていません）というエラーメッセージが返されることを確認します。これは、サーバーサイドのクエリに field という追加のパラメータが含まれており、それが # 文字によって削除されたことを示しています。
+
+無効な値を持つ field パラメータをリクエストに追加します。追加したパラメータと値のペアの後ろでクエリ文字列を切り捨てます。例えば、URLエンコードされた &field=x# を追加します：
+username=administrator%26field=x%23
+リクエストを送信します。これにより Invalid field（無効なフィールドです）というエラーメッセージが返されることを確認します。これは、サーバーサイドアプリケーションが、注入された field パラメータを認識していることを示しています。
+
 Overriding exisitng parameter
 例えば GET /userSearch?name=peter%26name=carlos&back=/home
 これを送った時、サーバーによって処理の仕方が違う
