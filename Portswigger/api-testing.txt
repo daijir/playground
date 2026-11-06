@@ -4,7 +4,7 @@ API Documentation
 
 ・JS Link Finerを利用して、JavaScript fileから怪しいendpointについて書き込みがないかチェック
 
-・GETをPOSTに変えてみたり、XMLからJSONに変えてみたりするのもあり(パラメータ is_admin が足りません、このデータ形式（application/xml）はサポートしていません、JSONで送ってねみたいな感じでエラーメッセージが変わって、ヒントを出してくれえる可能性がある
+・GETをPOSTに変えてみたり、XMLからJSONに変えてみたりするのもあり、パラメータ is_admin が足りません、このデータ形式（application/xml）はサポートしていません、JSONで送ってねみたいな感じでエラーメッセージが変わって、ヒントを出してくれえる可能性がある
 
 ・Burp Intruder HTTP verbsを使ってみる。DELETEなどは基本的に使用しないほうが良い
 ・content typeを特定し、サポートしてないcontentでも攻撃を試す
